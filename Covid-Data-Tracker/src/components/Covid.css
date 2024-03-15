@@ -1,0 +1,39 @@
+h2{
+    text-align: center;
+    color: white;
+}
+.container{
+    background-color: rgb(111, 22, 189);
+}
+.card_main{
+    background-color: rgb(57, 9, 105);
+    color: rgb(2, 2, 2);
+    /* border: 3px solid white; */
+    width: 200px;
+    height:  170px;
+    text-align: center;
+    height: auto;
+    padding: 10px;
+    width: auto;
+    margin: 10px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+.card_inner{
+    border: 2px solid white;
+    border-radius: 10px; 
+    margin-bottom: 30px; 
+    display: inline-block;
+    padding: 40px;
+    margin-right: 50px;
+    height: 200px;
+    width: 200px;
+    color: white;
+    border-radius: 40%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+.card_inner:hover{
+    background-color: blueviolet;
+}
