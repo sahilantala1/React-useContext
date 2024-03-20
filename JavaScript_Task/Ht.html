@@ -7,54 +7,37 @@
   </head>
   <body>
     <script>
-      let n = 5;
-      function item() {
-        for (let i = n; i >= 1; i--) {
-          let str = "*".repeat(n);
-          let space = "&nbsp".repeat(n - 5);
-          document.write(space + str + "&nbsp" + "&nbsp");
+      const rows = 5;
+        for (let i = rows; i >= 1; i--) {
+            let row = '';
+            for (let j = 1; j <= rows; j++) {
+                
+                for (let k = 0; k < rows - i; k++) {
+                    row += '  ';
+                }
+              
+                for (let l = 0; l < i; l++) {
+                  if(i<2){
+                    row += ` 5  `;
+                    }
+                    else{
+                  if(j%2!=0){
+                    row += ` -  `;
+                  }else{
+                    row += ` *  `;
+                  }
+                }
+              }
+              
+                
+                for (let m = 0; m < rows - i; m++) {
+                    row += '  ';
+                }
+              
+                row += '  ';
+            }
+            console.log(row);
         }
-        document.write("</br>");
-        for (let i = 5; i >= 1; i--) {
-          let star_row = "*".repeat(n - 1);
-          let space_row = "&nbsp".repeat(n - 4);
-          document.write(space_row + star_row + "&nbsp".repeat(3));
-        }
-        document.write("</br>");
-        for (let i = 5; i >= 1; i--) {
-          let star_row = "*".repeat(n - 2);
-          let space_row = "&nbsp".repeat(n - 4);
-          document.write(
-            "&nbsp".repeat(1)+
-              space_row +
-              star_row +
-              "&nbsp".repeat(4)
-          );
-        }
-        document.write("</br>");
-        for (let i = 5; i >= 1; i--) {
-          let star_row = "*".repeat(n - 3);
-          let space_row = "&nbsp".repeat(n - 4);
-          document.write(
-            "&nbsp".repeat(2)+
-              space_row +
-              star_row +
-              "&nbsp".repeat(5)
-          );
-        }
-        document.write("</br>");
-        for (let i = 5; i >= 1; i--) {
-          let star_row = "*".repeat(n - 4);
-          let space_row = "&nbsp".repeat(n - 4);
-          document.write(
-            "&nbsp".repeat(3) +
-              space_row +
-              star_row +
-              "&nbsp".repeat(6)
-          );
-        }
-      }
-      item();
     </script>
   </body>
 </html>
