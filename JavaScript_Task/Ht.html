@@ -8,36 +8,32 @@
   <body>
     <script>
       const rows = 5;
-        for (let i = rows; i >= 1; i--) {
-            let row = '';
-            for (let j = 1; j <= rows; j++) {
-                
-                for (let k = 0; k < rows - i; k++) {
-                    row += '  ';
-                }
-              
-                for (let l = 0; l < i; l++) {
-                  if(i<2){
-                    row += ` 5  `;
-                    }
-                    else{
-                  if(j%2!=0){
-                    row += ` -  `;
-                  }else{
-                    row += ` *  `;
-                  }
-                }
+      for (let i = rows; i >= 1; i--) {
+        let row = "";
+        for (let j = 1; j <= rows; j++) {
+          for (let k = 0; k < rows - i; k++) {
+            row += "  ";
+          }
+
+          for (let l = 0; l < i; l++) {
+            if (i < 2) {
+              row += ` 5  `;
+            } else {
+              if (j % 2 != 0) {
+                row += ` -  `;
+              } else {
+                row += ` *  `;
               }
-              
-                
-                for (let m = 0; m < rows - i; m++) {
-                    row += '  ';
-                }
-              
-                row += '  ';
             }
-            console.log(row);
+          }
+          for (let m = 0; m < rows - i; m++) {
+            row += "  ";
+          }
+
+          row += "  ";
         }
+        console.log(row);
+      }
     </script>
   </body>
 </html>

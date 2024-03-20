@@ -7,23 +7,29 @@
   </head>
   <body>
     <script>
-    function printReversePyramid(rows) {
-      for (let i = 0; i < rows; i++) {
-        let str = '';
-        let space = '';
-        // Constructing the string for stars
-        for (let j = 0; j < rows - i; j++) {
-          str += '*';
+        let n = 5;
+        for (let i = 1; i <= n; i++) {
+            let str = "";
+            let newone = "";
+            for (let j = 1; j <= 2 * n; ++j) {
+                if (i + j >= n + 1 && i >= j - n + 1) {
+                    str += i - 1;
+                } else {
+                    str += " ";
+                }
+            }
+            console.log(str);
         }
-        // Constructing the string for spaces
-        for (let k = 0; k < i; k++) {
-          space += '&nbsp;';
+        for (let x = 1; x <= n; x++) {
+            let newone = " ";
+            for (let k = 1; k < x; k++) {
+                newone += " ";
+            }
+            for (let d = 3; d <= 2 * (n - x) + 1; d++) {
+                newone += 4-x;
+            }
+            console.log(newone);
         }
-        document.write(space + str + '<br />');
-      }
-    }
-    let rows = 5; // Number of rows in the pyramid
-    printReversePyramid(rows);
-  </script>
+    </script>
   </body>
 </html>
