@@ -12,6 +12,9 @@ function App() {
     }
   };
 
+  const imageUrlPattern = /\.(jpg|jpeg|png|gif|webp)$/i;
+  const base64Pattern = /^data:image\/(jpeg|png|gif);base64,/i;
+
   const [selectedTab, setSelectedTab] = useState(getLocalItems());
   const [inputValues, setInputValues] = useState({
     Name: "",
@@ -20,7 +23,14 @@ function App() {
     Images: "",
   });
   const [editIndex, setEditIndex] = useState(null);
-  const [idCounter, setIdCounter] = useState(1);
+  const [idCounter, setIdCounter] = useState(
+    getLocalItems().length > 0
+      ? Math.max(
+          ...getLocalItems().map((item) => parseInt(item.Id.slice(-4)))
+        ) + 1
+      : 1
+  );
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -54,31 +64,36 @@ function App() {
       return;
     }
 
+    // Validation for image URL format
+    if (!isValidImageUrl(inputValues.Images)) {
+      alert(
+        "Invalid image URL format. Image format should be jpg, jpeg, png, gif, or webp."
+      );
+      return;
+    }
+
     if (editIndex !== null) {
-      console.log("if");
       const updatedTab = [...selectedTab];
       const updatedBlog = {
-        Id: updatedTab[editIndex].Id, // Set the ID when adding a new blog
+        Id: updatedTab[editIndex].Id,
         Name: inputValues.Name,
         DateT: inputValues.DateT,
         Description: inputValues.Description,
         Images: inputValues.Images,
       };
-      // If editing, update the selected blog post
       updatedTab[editIndex] = updatedBlog;
       setSelectedTab(updatedTab);
-      setEditIndex(null); // Reset editIndex after update
+      setEditIndex(null);
     } else {
-      console.log("else");
       const newBlog = {
-        Id: idGenerator(), // Set the ID when adding a new blog
+        Id: idGenerator(idCounter),
         Name: inputValues.Name,
         DateT: inputValues.DateT,
         Description: inputValues.Description,
         Images: inputValues.Images,
       };
-      // If not editing, add a new blog post
       setSelectedTab([...selectedTab, newBlog]);
+      setIdCounter(idCounter + 1); // Increment ID counter for unique IDs
     }
 
     setInputValues({
@@ -92,7 +107,6 @@ function App() {
   const handleDeleteButtonClick = (index) => {
     const updatedTab = selectedTab.filter((_, i) => i !== index);
     setSelectedTab(updatedTab);
-    setIdCounter(updatedTab.length);
   };
 
   const handleEditButtonClick = (index) => {
@@ -101,25 +115,50 @@ function App() {
     setEditIndex(index);
   };
 
+  const handleDuplicateButtonClick = (index) => {
+    const originalBlog = selectedTab[index];
+    const duplicatedId = parseInt(originalBlog.Id.slice(-4)) + 1; // Increment ID by 1
+    const duplicatedBlog = { ...originalBlog, Id: idGenerator(duplicatedId) };
+    setSelectedTab([...selectedTab, duplicatedBlog]);
+    setIdCounter(idCounter + 1);
+  };
+
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(selectedTab));
   }, [selectedTab]);
 
-  const idGenerator = () => {
+  const idGenerator = (counter) => {
     const showdate = new Date();
     const displaytodaysdate =
       showdate.getFullYear() +
       (showdate.getMonth() + 1).toString().padStart(2, "0") +
       showdate.getDate().toString().padStart(2, "0") +
-      idCounter.toString().padStart(4, "0");
-    setIdCounter(idCounter + 1);
+      counter.toString().padStart(4, "0");
     return displaytodaysdate;
   };
 
+  const isValidImageUrl = (url) => {
+    return imageUrlPattern.test(url) || base64Pattern.test(url);
+  };
+
+  const filteredBlogs = selectedTab.filter(
+    (blog) =>
+      blog.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      blog.Description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="app-container">
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search by Name or Description"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <div className="detail">
-        {selectedTab.map((item, index) => (
+        {filteredBlogs.map((item, index) => (
           <div key={index} className="showdata">
             <div>
               <p>
@@ -128,19 +167,27 @@ function App() {
               <p>Id : {item.Id}</p>
               <p>Name: {item.Name}</p>
               <p>Date: {item.DateT}</p>
-              <p>Description: {item.Description}</p>
-              <button
-                className="btn btn-primary update-button"
-                onClick={() => handleEditButtonClick(index)}
-              >
-                Edit
-              </button>
-              <button
-                className="btn btn-danger delete-button"
-                onClick={() => handleDeleteButtonClick(index)}
-              >
-                Delete
-              </button>
+              <p className="disc">Description: {item.Description}</p>
+              <div className="buttons">
+                <button
+                  className="btn btn-primary update-button"
+                  onClick={() => handleEditButtonClick(index)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger delete-button"
+                  onClick={() => handleDeleteButtonClick(index)}
+                >
+                  Delete
+                </button>
+                <button
+                  className="btn btn-secondary duplicate-button"
+                  onClick={() => handleDuplicateButtonClick(index)}
+                >
+                  Duplicate
+                </button>
+              </div>
             </div>
           </div>
         ))}
