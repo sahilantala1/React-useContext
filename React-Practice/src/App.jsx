@@ -12,6 +12,27 @@ function App() {
     }
   };
 
+  const handleDuplicateButtonClick = (postId) => {
+    const postToDuplicate = selectedTab.find((post) => post.Id === postId);
+
+    // Find the highest ID in the current list
+    const highestId = selectedTab.reduce((maxId, post) => {
+      const postId = parseInt(post.Id.slice(-4));
+      return postId > maxId ? postId : maxId;
+    }, 0);
+
+    // Generate a unique ID by incrementing the highest ID by 1
+    const duplicatedId = highestId + 1;
+
+    const duplicatedPost = {
+      ...postToDuplicate,
+      Id: idGenerator(duplicatedId),
+      DateT: new Date().toISOString().slice(0, 10), // Assuming you want to update the date to today's date
+    };
+
+    setSelectedTab([...selectedTab, duplicatedPost]);
+  };
+
   const imageUrlPattern = /\.(jpg|jpeg|png|gif|webp)$/i;
   const base64Pattern = /^data:image\/(jpeg|png|gif);base64,/i;
 
@@ -52,6 +73,16 @@ function App() {
 
   const handleAddButtonClick = (e) => {
     e.preventDefault();
+
+    // Find the highest ID in the current list
+    const highestId = selectedTab.reduce((maxId, post) => {
+      const postId = parseInt(post.Id.slice(-4));
+      return postId > maxId ? postId : maxId;
+    }, 0);
+
+    // Generate a unique ID by incrementing the highest ID by 1
+    const newId = highestId + 1;
+
     // Validation for name (contains only characters, no digits or special characters)
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!nameRegex.test(inputValues.Name)) {
@@ -81,7 +112,6 @@ function App() {
       );
       return;
     }
-
     if (editIndex !== null) {
       const updatedTab = [...selectedTab];
       const updatedBlog = {
@@ -96,14 +126,13 @@ function App() {
       setEditIndex(null);
     } else {
       const newBlog = {
-        Id: idGenerator(idCounter),
+        Id: idGenerator(newId),
         Name: inputValues.Name,
         DateT: inputValues.DateT,
         Description: inputValues.Description,
         Images: inputValues.Images,
       };
       setSelectedTab([...selectedTab, newBlog]);
-      setIdCounter(idCounter + 1); // Increment ID counter for unique IDs
     }
 
     setInputValues({
@@ -182,6 +211,12 @@ function App() {
                   onClick={() => handleDeleteButtonClick(index)}
                 >
                   Delete
+                </button>
+                <button
+                  className="btn btn-secondary duplicate-button"
+                  onClick={() => handleDuplicateButtonClick(item.Id)} // Pass item.Id to the function
+                >
+                  Duplicate
                 </button>
               </div>
             </div>
