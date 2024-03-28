@@ -23,13 +23,23 @@ function App() {
     Images: "",
   });
   const [editIndex, setEditIndex] = useState(null);
-  const [idCounter, setIdCounter] = useState(
-    getLocalItems().length > 0
-      ? Math.max(
-          ...getLocalItems().map((item) => parseInt(item.Id.slice(-4)))
-        ) + 1
-      : 1
-  );
+  const [idCounter, setIdCounter] = useState(() => {
+    const localItems = getLocalItems();
+    if (localItems.length > 0) {
+      const maxId = localItems.reduce((max, item) => {
+        const itemId = item.Id;
+        if (itemId && typeof itemId === "string" && itemId.length >= 4) {
+          const lastFourDigits = parseInt(itemId.slice(-4));
+          return Math.max(max, lastFourDigits);
+        }
+        return max;
+      }, 0);
+      return maxId + 1;
+    } else {
+      return 1;
+    }
+  });
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleInputChange = (event) => {
@@ -115,14 +125,6 @@ function App() {
     setEditIndex(index);
   };
 
-  const handleDuplicateButtonClick = (index) => {
-    const originalBlog = selectedTab[index];
-    const duplicatedId = parseInt(originalBlog.Id.slice(-4)) + 1; // Increment ID by 1
-    const duplicatedBlog = { ...originalBlog, Id: idGenerator(duplicatedId) };
-    setSelectedTab([...selectedTab, duplicatedBlog]);
-    setIdCounter(idCounter + 1);
-  };
-
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(selectedTab));
   }, [selectedTab]);
@@ -180,12 +182,6 @@ function App() {
                   onClick={() => handleDeleteButtonClick(index)}
                 >
                   Delete
-                </button>
-                <button
-                  className="btn btn-secondary duplicate-button"
-                  onClick={() => handleDuplicateButtonClick(index)}
-                >
-                  Duplicate
                 </button>
               </div>
             </div>
