@@ -143,16 +143,51 @@ function App() {
     });
   };
 
-  const handleDeleteButtonClick = (index) => {
-    const updatedTab = selectedTab.filter((_, i) => i !== index);
-    setSelectedTab(updatedTab);
+  const handleEditButtonClick = (index) => {
+    setEditIndex(index);
+    const blogToEdit = selectedTab[index];
+    setInputValues({
+      Name: blogToEdit.Name,
+      DateT: blogToEdit.DateT,
+      Description: blogToEdit.Description,
+      Images: blogToEdit.Images,
+    });
   };
 
-  const handleEditButtonClick = (index) => {
-    const blogToEdit = selectedTab[index];
-    setInputValues(blogToEdit);
-    setEditIndex(index);
+  const handleDeleteButtonClick = () => {
+    if (editIndex !== null) {
+      // Clear input fields
+      setInputValues({
+        Name: "",
+        DateT: "",
+        Description: "",
+        Images: "",
+      });
+      // Delete the edited blog
+      const updatedTab = selectedTab.filter((_, i) => i !== editIndex);
+      setSelectedTab(updatedTab);
+      setEditIndex(null);
+      // Alert for deletion
+      alert("Edited blog deleted successfully!");
+    } else {
+      if (selectedTab.length > 0) {
+        // Delete the selected blog
+        const updatedTab = [...selectedTab];
+        updatedTab.splice(editIndex, 1);
+        setSelectedTab(updatedTab);
+        // Alert for deletion
+        alert("Blog deleted successfully!");
+      } else {
+        alert("No blogs to delete.");
+      }
+    }
   };
+
+  // const buttonText = editIndex !== null ? "Update" : "Add";
+
+  // <button onClick={handleDeleteButtonClick}>
+  //   {editIndex !== null ? "Clear & Add" : "Delete"}
+  // </button>;
 
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(selectedTab));
@@ -208,10 +243,11 @@ function App() {
                 </button>
                 <button
                   className="btn btn-danger delete-button"
-                  onClick={() => handleDeleteButtonClick(index)}
+                  onClick={handleDeleteButtonClick}
                 >
                   Delete
                 </button>
+
                 <button
                   className="btn btn-secondary duplicate-button"
                   onClick={() => handleDuplicateButtonClick(item.Id)} // Pass item.Id to the function
